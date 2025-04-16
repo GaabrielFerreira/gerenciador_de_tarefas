@@ -51,8 +51,7 @@ int remove_fim(Lista *p_l, tarefa *p_e);
    Retorna 0 caso este nó não tenha sido encontrado */
 int remove_valor(Lista *p_l, tarefa e);
 
-/* Inverte os elementos de uma lista */
-void inverte(Lista *p_l);
+void busca(Lista *p_l);
 
 /* Remove todos os nós da lista */
 void libera(Lista *p_l);

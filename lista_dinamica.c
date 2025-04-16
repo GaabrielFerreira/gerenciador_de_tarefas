@@ -23,7 +23,7 @@ int vazia(Lista *p_l) {
 }
 
 // Insere um elemento no início da lista
-void insere_inicio(Lista *p_l, elem_t e) {
+void insere_inicio(Lista *p_l, tarefa e) {
     No_lista *novo = (No_lista*)malloc(sizeof(No_lista));
     novo->info = e;
     novo->prox = *p_l;  // Aponta para o antigo primeiro nó
@@ -31,7 +31,7 @@ void insere_inicio(Lista *p_l, elem_t e) {
 }
 
 // Insere um elemento no final da lista
-void insere_fim(Lista *p_l, elem_t e) {
+void insere_fim(Lista *p_l, tarefa e) {
     No_lista *no = (No_lista*)malloc(sizeof(No_lista)), *aux = *p_l;
 
     no->info = e;
@@ -49,7 +49,7 @@ void insere_fim(Lista *p_l, elem_t e) {
 }
 
 // Insere um elemento de forma ordenada na lista
-int insere_ordenado(Lista *p_l, elem_t e) {
+int insere_ordenado(Lista *p_l, tarefa e) {
     No_lista *no = (No_lista*)malloc(sizeof(No_lista)), *aux = *p_l;
     no->info = e;
     no->prox = NULL;
@@ -107,7 +107,7 @@ void ordena(Lista *p_l) { //Nao consegui :(
 }
 
 // Remove o primeiro elemento da lista
-int remove_inicio(Lista *p_l, elem_t *p_e) {
+int remove_inicio(Lista *p_l, tarefa *p_e) {
     if (vazia(p_l)) 
         return 0;
 
@@ -119,7 +119,7 @@ int remove_inicio(Lista *p_l, elem_t *p_e) {
 }
 
 // Remove o último elemento da lista
-int remove_fim(Lista *p_l, elem_t *p_e) {
+int remove_fim(Lista *p_l, tarefa *p_e) {
     if (vazia(p_l)) 
         return 0; 
 
@@ -143,7 +143,7 @@ int remove_fim(Lista *p_l, elem_t *p_e) {
 }
 
 // Remove um elemento específico da lista
-int remove_valor(Lista *p_l, elem_t e) { //Nao consegui :(
+int remove_valor(Lista *p_l, tarefa e) { //Nao consegui :(
     if (vazia(p_l)) 
         return 0;
 
@@ -160,21 +160,14 @@ int remove_valor(Lista *p_l, elem_t e) { //Nao consegui :(
     return 1;
 }
 
-// Inverte a ordem dos elementos na lista
-void inverte(Lista *p_l) { //Nao consegui :(
-    if (vazia(p_l))
-        return;
+void busca(Lista *p_l) {
+    /*
+        Lista todas tarefas: CASE
+        1 - por prioridade
+        2 - por categoria
+        3 - por nome tarefa
 
-    No_lista *atual = *p_l, *anterior = NULL, *proximo;
-
-    while (atual != NULL) {
-        proximo = atual->prox;
-        atual->prox = anterior;
-        anterior = atual;
-        atual = proximo;
-    }
-
-    *p_l = anterior;  // O último nó se torna o primeiro
+    */
 }
 
 // Libera toda a memória da lista
