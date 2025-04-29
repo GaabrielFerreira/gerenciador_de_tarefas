@@ -1,13 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <time.h>
 #include "lista_dinamica.h"
 
-/*
-  Título: Lista Dinâmica (Simples Encadeada)
-  Autores: Gabriel Ferreira RA: 236085
-  Última modificação: 17/03 às 22:46
-  Detalhes: Implementação das operações da TAD Lista com alocação dinâmica.
-*/
+int count = 0;
 
 // Inicializa a lista, tornando-a vazia
 void cria(Lista *p_l) {
@@ -16,56 +13,27 @@ void cria(Lista *p_l) {
 
 // Verifica se a lista está vazia
 int vazia(Lista *p_l) {
-    if (*p_l == NULL)
-        return 1;
-    else 
-        return 0;
-}
-
-// Insere um elemento no início da lista
-void insere_inicio(Lista *p_l, tarefa e) {
-    No_lista *novo = (No_lista*)malloc(sizeof(No_lista));
-    novo->info = e;
-    novo->prox = *p_l;  // Aponta para o antigo primeiro nó
-    *p_l = novo;  // O novo nó passa a ser o primeiro
+    return (*p_l == NULL);
 }
 
 // Insere um elemento no final da lista
 void insere_fim(Lista *p_l, tarefa e) {
-    No_lista *no = (No_lista*)malloc(sizeof(No_lista)), *aux = *p_l;
+    No_lista *no = (No_lista *)malloc(sizeof(No_lista));
+    No_lista *aux = *p_l;
 
     no->info = e;
+    no->info.id = ++count;
     no->prox = NULL;
 
-    if (aux == NULL) {  // Se a lista estiver vazia
+    if (aux == NULL) {
         *p_l = no;
         return;
     }
 
-    while (aux->prox != NULL)  // Percorre até o último nó
+    while (aux->prox != NULL)
         aux = aux->prox;
 
-    aux->prox = no;  // O último nó agora aponta para o novo nó
-}
-
-// Insere um elemento de forma ordenada na lista
-int insere_ordenado(Lista *p_l, tarefa e) {
-    No_lista *no = (No_lista*)malloc(sizeof(No_lista)), *aux = *p_l;
-    no->info = e;
-    no->prox = NULL;
-
-    if (*p_l == NULL) {  // Lista vazia
-        no->prox = *p_l;
-        *p_l = no;
-        return 1;
-    }
-
-    while (aux->prox != NULL && aux->prox->info < e)  // Encontra a posição correta
-        aux = aux->prox;
-
-    no->prox = aux->prox;
     aux->prox = no;
-    return 1;
 }
 
 // Verifica se a lista está ordenada
@@ -73,29 +41,30 @@ int ordenada(Lista *p_l) {
     No_lista *aux = *p_l;
 
     while (aux != NULL && aux->prox != NULL) {
-        if (aux->info > aux->prox->info) { // Se encontrar um elemento maior que o próximo, não está ordenada
-            printf("Lista nao esta ordenada!");
+        if (aux->info.prioridade > aux->prox->info.prioridade)
             return 0;
+        else if (aux->info.prioridade == aux->prox->info.prioridade)  {
+            if (aux->info.id > aux->prox->info.id)
+                return 0;
         }
         aux = aux->prox;
     }
-
-    printf("Lista esta ordenada!");
-    return 1;  // A lista está ordenada
+    return 1;
 }
 
 // Ordena a lista de forma crescente
-void ordena(Lista *p_l) { //Nao consegui :(
-    if (vazia(p_l)) 
+void ordena(Lista *p_l) {
+    if (vazia(p_l))
         return;
 
     No_lista *i = *p_l, *j;
-    int temp;
+    tarefa temp;
 
     while (i != NULL) {
         j = i->prox;
         while (j != NULL) {
-            if (i->info > j->info) {  // Se os elementos estiverem fora de ordem, troca
+            if (i->info.prioridade > j->info.prioridade ||
+                (i->info.prioridade == j->info.prioridade && i->info.id > j->info.id)) {
                 temp = i->info;
                 i->info = j->info;
                 j->info = temp;
@@ -108,34 +77,35 @@ void ordena(Lista *p_l) { //Nao consegui :(
 
 // Remove o primeiro elemento da lista
 int remove_inicio(Lista *p_l, tarefa *p_e) {
-    if (vazia(p_l)) 
+    if (vazia(p_l))
         return 0;
 
     No_lista *no = *p_l;
     *p_e = no->info;
-    *p_l = no->prox;  // O segundo nó se torna o primeiro
-    free(no);  // Libera a memória do nó removido
+    *p_l = no->prox;
+    free(no);
     return 1;
 }
 
 // Remove o último elemento da lista
 int remove_fim(Lista *p_l, tarefa *p_e) {
-    if (vazia(p_l)) 
-        return 0; 
+    if (vazia(p_l))
+        return 0;
 
     No_lista *aux = *p_l, *no;
 
-    if (aux->prox == NULL) {  // Se a lista tem apenas um elemento
+    if (aux->prox == NULL) {
         no = aux;
         *p_e = no->info;
-        *p_l = NULL;  // Lista fica vazia
-    } else {
-        while (aux->prox->prox != NULL)  // Percorre até o penúltimo nó
+        *p_l = NULL;
+    }
+    else {
+        while (aux->prox->prox != NULL)
             aux = aux->prox;
 
         no = aux->prox;
         *p_e = no->info;
-        aux->prox = NULL;  // O penúltimo nó agora é o último
+        aux->prox = NULL;
     }
 
     free(no);
@@ -143,31 +113,129 @@ int remove_fim(Lista *p_l, tarefa *p_e) {
 }
 
 // Remove um elemento específico da lista
-int remove_valor(Lista *p_l, tarefa e) { //Nao consegui :(
-    if (vazia(p_l)) 
+int remove_valor(Lista *p_l, tarefa e) {
+    if (vazia(p_l))
         return 0;
 
-    No_lista *aux = *p_l, *no;
+    No_lista *aux = *p_l, *ant = NULL;
 
-    while (aux->prox != NULL && aux->prox->info != e)  // Encontra o nó com o valor
+    while (aux != NULL && aux->info.id != e.id) {
+        ant = aux;
         aux = aux->prox;
+    }
 
-    if (aux->prox == NULL) return 0;  // Se o valor não for encontrado
+    if (aux == NULL)
+        return 0;
 
-    no = aux->prox;
-    aux->prox = no->prox;  // Remove o nó da lista
-    free(no);
+    if (ant == NULL)
+        *p_l = aux->prox;
+    else
+        ant->prox = aux->prox;
+
+    free(aux);
     return 1;
 }
 
-void busca(Lista *p_l) {
-    /*
-        Lista todas tarefas: CASE
-        1 - por prioridade
-        2 - por categoria
-        3 - por nome tarefa
+// Busca tarefas por prioridade
+int busca_prioridade(Lista *p_l, int prioridade) {
+    int count = 0;
+    No_lista *aux = *p_l;
+    while (aux) {
+        if (aux->info.prioridade == prioridade) count++;
+        aux = aux->prox;
+    }
+    return count;
+}
 
-    */
+// Busca tarefas por categoria
+int busca_categoria(Lista *p_l, const char *categoria) {
+    int count = 0;
+    No_lista *aux = *p_l;
+    while (aux) {
+        if (strcmp(aux->info.categoria, categoria) == 0) count++;
+        aux = aux->prox;
+    }
+    return count;
+}
+
+// Busca tarefa por nome
+int busca_nome(Lista *p_l, const char *nome) {
+    int count = 0;
+    No_lista *aux = *p_l;
+    while (aux) {
+        if (strstr(aux->info.nome, nome) != NULL) count++;
+        aux = aux->prox;
+    }
+    return count;
+}
+
+// Busca tarefa por id
+int busca_id(Lista *p_l, int id) {
+    No_lista *aux = *p_l;
+    while (aux) {
+        if (aux->info.id == id) return 1;
+        aux = aux->prox;
+    }
+    return 0;
+}
+
+// Funções para testes
+void ler_arquivo(Lista *lista, const char *nome_arquivo) {
+    FILE *arquivo = fopen(nome_arquivo, "r");
+    if (!arquivo) {
+        perror("Erro ao abrir arquivo");
+        exit(EXIT_FAILURE);
+    }
+
+    char linha[256];
+    while (fgets(linha, sizeof(linha), arquivo)) {
+        tarefa t;
+        linha[strcspn(linha, "\n")] = 0;
+
+        char *token = strtok(linha, ";");
+        t.id = atoi(token);
+
+        token = strtok(NULL, ";");
+        strncpy(t.nome, token, MAX_NOME-1);
+
+        token = strtok(NULL, ";");
+        strncpy(t.desc, token, MAX_DESC-1);
+
+        token = strtok(NULL, ";");
+        t.prioridade = atoi(token);
+
+        token = strtok(NULL, ";");
+        if (token) 
+            strncpy(t.categoria, token, MAX_CATEGORIA-1);
+
+        insere_fim(lista, t);
+    }
+    fclose(arquivo);
+}
+
+//Função para duplicar lista
+void duplicar_lista(Lista *origem, Lista *destino) {
+    cria(destino);
+    No_lista *aux = *origem;
+    while (aux != NULL) {
+        insere_fim(destino, aux->info);
+        aux = aux->prox;
+    }
+}
+
+// Funções de medição de tempo
+void medir_tempo_insercao(Lista *lista, const char *arquivo) {
+    clock_t inicio = clock();
+    ler_arquivo(lista, arquivo);
+    clock_t fim = clock();
+    printf("Tempo insercao: %.5f s\n", (double)(fim - inicio)/CLOCKS_PER_SEC);
+}
+
+void medir_tempo_ordenacao(Lista *lista) {
+    clock_t inicio = clock();
+    ordena(lista);
+    clock_t fim = clock();
+    printf("Tempo ordenacao: %.5f s\n", (double)(fim - inicio)/CLOCKS_PER_SEC);
 }
 
 // Libera toda a memória da lista
@@ -177,7 +245,7 @@ void libera(Lista *p_l) {
     while (*p_l != NULL) {
         no = *p_l;
         *p_l = no->prox;
-        free(no);  // Libera o nó
+        free(no);
     }
 }
 
@@ -185,10 +253,12 @@ void libera(Lista *p_l) {
 void exibe(Lista *p_l) {
     No_lista *no = *p_l;
 
-    printf("\nExibindo lista...\nLista: ");
+    printf("\n=== LISTA DE TAREFAS ===\n");
     while (no != NULL) {
-        printf("%d ", no->info);
+        printf("ID: %d\nNome: %s\nDescricao: %s\nPrioridade: %d\nCategoria: %s\n\n",
+               no->info.id, no->info.nome, no->info.desc,
+               no->info.prioridade, no->info.categoria);
         no = no->prox;
     }
-    printf("\n");
+    printf("=======================\n");
 }

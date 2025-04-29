@@ -1,60 +1,41 @@
-/*
- * Esqueleto para a implementação de listas.
- */
+#define MAX_NOME 50
+#define MAX_DESC 100
+#define MAX_CATEGORIA 20
 
-typedef struct tarefa{
-   int id;
-   char nome[30];
-   char desc[100];
-   int prioridade;
-   char categoria[20];
+typedef struct {
+    int id;
+    char nome[MAX_NOME];
+    char desc[MAX_DESC];
+    int prioridade;
+    char categoria[MAX_CATEGORIA];
 } tarefa;
-typedef struct no{
-  tarefa info;
-  struct no *prox;
+
+typedef struct no_lista {
+    tarefa info;
+    struct no_lista *prox;
 } No_lista;
 
-typedef No_lista * Lista;
+typedef No_lista *Lista;
 
-/* Inicializa uma lista */
+// Funções básicas
 void cria(Lista *p_l);
-
-/* Verifica se a lista está vazia ou não */
 int vazia(Lista *p_l);
-
-/* Insere um elemento no início da lista */
-void insere_inicio(Lista *p_l, tarefa e);
-
-/* Insere um elemento no final da lista */
 void insere_fim(Lista *p_l, tarefa e);
-
-/* Insere um elemento na lista de maneira ordenada.
-   Retorna 0 caso o elemento já exista na lista. 
-   Assume que a lista está ordenada */
-int insere_ordenado(Lista *p_l, tarefa e);
-
-/* Verifica se a lista está ordenada */
 int ordenada(Lista *p_l);
-
-/* Ordena a lista */
 void ordena(Lista *p_l);
-
-/* Remove o elemento que está no início da lista.
-   Retorna 0 caso a lista esteja vazia */
 int remove_inicio(Lista *p_l, tarefa *p_e);
-
-/* Remove o elemento que está no final da lista.
-   Retorna 0 caso a lista esteja vazia */
 int remove_fim(Lista *p_l, tarefa *p_e);
-
-/* Remove o nó de valor e.
-   Retorna 0 caso este nó não tenha sido encontrado */
 int remove_valor(Lista *p_l, tarefa e);
-
-void busca(Lista *p_l);
-
-/* Remove todos os nós da lista */
 void libera(Lista *p_l);
 
-/* Exibe o conteúdo da lista */
-void exibe(Lista *p_l);
+// Funções de busca (modificadas para testes)
+int busca_prioridade(Lista *p_l, int prioridade);
+int busca_categoria(Lista *p_l, const char *categoria);
+int busca_nome(Lista *p_l, const char *nome);
+int busca_id(Lista *p_l, int id);
+
+// Funções para testes
+void ler_arquivo(Lista *lista, const char *nome_arquivo);
+void duplicar_lista(Lista *origem, Lista *destino);
+void medir_tempo_insercao(Lista *lista, const char *arquivo);
+void medir_tempo_ordenacao(Lista *lista);
