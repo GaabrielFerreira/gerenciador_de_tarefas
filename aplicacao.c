@@ -106,7 +106,6 @@ void testar_operacoes(const char *arquivo) {
 }
 
 int main() {
-    // Cabeçalho para CSV
     printf("Tamanho\tInsercao\tOrdenacao\tVerificacao\tBuscas\t\tRemocao_Inicio\tRemocao_Fim\tRemocao_Valor\tTOTAL\n");
     
     testar_operacoes("tarefas_100.txt");
