@@ -3,110 +3,158 @@
 #include <string.h>
 #include <time.h>
 #include "lista_dinamica.h"
+#include "arvore_avl.h"
 
 void testar_operacoes(const char *arquivo) {
-    Lista original, copia;
+    Lista lista, copia;
+    AVL avl;
     clock_t inicio, fim, a, b;
     int data_size = atoi(strrchr(arquivo, '_') + 1);
-    double total_tempo = 0.;
+    double total_tempo_lista = 0.;
+    double total_tempo_avl = 0.;
     
+    // Cabeçalho para o arquivo atual
+    printf("\n\n***** TESTE COM %d ELEMENTOS *****\n", data_size);
+    printf("\nTipo\tInsercao\tOrdenacao\tVerificacao\tBuscas\t\tRemocao_Inicio\tRemocao_Fim\tRemocao_Valor\tTOTAL\n");
+    
+    //INICIA CONTAGEM DE TEMPO DE EXECUCAO PARA LISTA
     a = clock();
-    // Teste 1: Inserção
-    cria(&original);
-    inicio = clock();
-    ler_arquivo(&original, arquivo);
-    fim = clock();
-    double tempo_insercao = (double)(fim - inicio)/CLOCKS_PER_SEC;
-    total_tempo += tempo_insercao;
 
-    // Teste 2: Ordenação
-    duplicar_lista(&original, &copia);
+    //TESTES LISTA...
+    cria(&lista);
+
+    //TESTE 1: Inserção Fim
+    inicio = clock();
+    ler_arquivo(&lista, arquivo);
+    fim = clock();
+    double tempo_insercao_lista = (double)(fim - inicio)/CLOCKS_PER_SEC;
+    total_tempo_lista += tempo_insercao_lista;
+    
+    //TESTE 2: ORDENA
+    duplicar_lista(&lista, &copia);
     inicio = clock();
     ordena(&copia);
     fim = clock();
-    double tempo_ordenacao = (double)(fim - inicio)/CLOCKS_PER_SEC;
+    double tempo_ordenacao_lista = (double)(fim - inicio)/CLOCKS_PER_SEC;
     libera(&copia);
-    total_tempo += tempo_ordenacao;
-
-    // Teste 3: Verificação de ordenação
-    duplicar_lista(&original, &copia);
+    total_tempo_lista += tempo_ordenacao_lista;
+    
+    //TESTE 3: VERIFICA ORDENACAO
+    duplicar_lista(&lista, &copia);
     ordena(&copia);
     inicio = clock();
     int ordenada_res = ordenada(&copia);
     fim = clock();
-    double tempo_verificacao = (double)(fim - inicio)/CLOCKS_PER_SEC;
+    double tempo_verificacao_lista = (double)(fim - inicio)/CLOCKS_PER_SEC;
     libera(&copia);
-    total_tempo += tempo_verificacao;
-
-    // Teste 4: Buscas
+    total_tempo_lista += tempo_verificacao_lista;
+    
+    //TESTE 4: BUSCAS
     inicio = clock();
-    int b_pri = busca_prioridade(&original, 2);
-    int b_cat = busca_categoria(&original, "Trabalho");
-    int b_nome = busca_nome(&original, "Importante");
-    int b_id = busca_id(&original, data_size/2);
+    int b_pri = busca_prioridade(&lista, 2);
+    int b_cat = busca_categoria(&lista, "Trabalho");
+    int b_nome = busca_nome(&lista, "Importante");
+    int b_id = busca_id(&lista, data_size/2);
     fim = clock();
-    double tempo_buscas = (double)(fim - inicio)/CLOCKS_PER_SEC;
-    total_tempo += tempo_buscas;
-
-    // Teste 5: Remoções
-    // Remoção no início
-    duplicar_lista(&original, &copia);
+    double tempo_buscas_lista = (double)(fim - inicio)/CLOCKS_PER_SEC;
+    total_tempo_lista += tempo_buscas_lista;
+    
+    //TESTE 5: REMOVE INICIO (10% DATASIZE)
+    duplicar_lista(&lista, &copia);
     inicio = clock();
     for(int i = 0; i < data_size/10; i++) {
         tarefa temp;
         remove_inicio(&copia, &temp);
     }
     fim = clock();
-    double tempo_rem_inicio = (double)(fim - inicio)/CLOCKS_PER_SEC;
+    double tempo_rem_inicio_lista = (double)(fim - inicio)/CLOCKS_PER_SEC;
     libera(&copia);
-    total_tempo += tempo_rem_inicio;
-
-    // Remoção no fim
-    duplicar_lista(&original, &copia);
+    total_tempo_lista += tempo_rem_inicio_lista;
+    
+    //TESTE 6: REMOVE FIM (10% DATASIZE)
+    duplicar_lista(&lista, &copia);
     inicio = clock();
     for(int i = 0; i < data_size/10; i++) {
         tarefa temp;
         remove_fim(&copia, &temp);
     }
     fim = clock();
-    double tempo_rem_fim = (double)(fim - inicio)/CLOCKS_PER_SEC;
+    double tempo_rem_fim_lista = (double)(fim - inicio)/CLOCKS_PER_SEC;
     libera(&copia);
-    total_tempo += tempo_rem_fim;
-
-    // Remoção por valor
-    duplicar_lista(&original, &copia);
+    total_tempo_lista += tempo_rem_fim_lista;
+    
+    //TESTE 6: REMOVE VALOR
+    duplicar_lista(&lista, &copia);
     inicio = clock();
     for(int i = 1; i <= data_size/10; i++) {
         tarefa alvo = {.id = i*10};
         remove_valor(&copia, alvo);
     }
     fim = clock();
-    double tempo_rem_valor = (double)(fim - inicio)/CLOCKS_PER_SEC;
+    double tempo_rem_valor_lista = (double)(fim - inicio)/CLOCKS_PER_SEC;
     libera(&copia);
-    total_tempo += tempo_rem_valor;
+    total_tempo_lista += tempo_rem_valor_lista;
+    
+    // OUTPUT DA LISTA
+    printf("LISTA\t%.6fs\t%.6fs\t%.6fs\t%.6fs\t%.6fs\t%.6fs\t%.6fs\t%.6fs\n",
+           tempo_insercao_lista,
+           tempo_ordenacao_lista,
+           tempo_verificacao_lista,
+           tempo_buscas_lista,
+           tempo_rem_inicio_lista,
+           tempo_rem_fim_lista,
+           tempo_rem_valor_lista,
+           total_tempo_lista);
+    
+    libera(&lista);
 
-    // Liberar memória
-    libera(&original);
+    
+    //TESTES AVL...
+    cria_avl(&avl);
 
-    // Saída formatada para análise
-    printf("%d\t%.6fs\t%.6fs\t%.6fs\t%.6fs\t%.6fs\t%.6fs\t%.6fs\t%.6fs\n",
-           data_size,
-           tempo_insercao,
-           tempo_ordenacao,
-           tempo_verificacao,
-           tempo_buscas,
-           tempo_rem_inicio,
-           tempo_rem_fim,
-           tempo_rem_valor,
-           total_tempo);
-
+    //TESTE 1: INSERCAO
+    inicio = clock();
+    ler_arquivo_avl(&avl, arquivo);
+    fim = clock();
+    double tempo_insercao_avl = (double)(fim - inicio)/CLOCKS_PER_SEC;
+    total_tempo_avl += tempo_insercao_avl;
+    
+    //TESTE 2: BUSCAS (a AVL já mantém ordenado, não precisa de ordenação separada)
+    inicio = clock();
+    int b_pri_avl = busca_prioridade_avl(&avl, 2);
+    int b_cat_avl = busca_categoria_avl(&avl, "Trabalho");
+    int b_nome_avl = busca_nome_avl(&avl, "Importante");
+    int b_id_avl = busca_id_avl(&avl, data_size/2);
+    fim = clock();
+    double tempo_buscas_avl = (double)(fim - inicio)/CLOCKS_PER_SEC;
+    total_tempo_avl += tempo_buscas_avl;
+    
+    //TESTE 3: REMOCAO
+    inicio = clock();
+    for(int i = 1; i <= data_size/10; i++) {
+        remove_avl(&avl, i*10);
+    }
+    fim = clock();
+    double tempo_remocao_avl = (double)(fim - inicio)/CLOCKS_PER_SEC;
+    total_tempo_avl += tempo_remocao_avl;
+    
+    // OUTPUT DA ARVORE AVL
+    printf("AVL\t%.6fs\t---------\t---------\t%.6fs\t---------\t---------\t%.6fs\t%.6fs\n",
+           tempo_insercao_avl,
+           tempo_buscas_avl,
+           tempo_remocao_avl,
+           total_tempo_avl);
+    
+    libera_avl(&avl);
+    
     b = clock();
     double tempo_total = (double)(b - a)/CLOCKS_PER_SEC;
-    printf("TEMPO TOTAL: %.6fs\n\n", tempo_total);
+    printf("\nTEMPO TOTAL: %.6fs\n", tempo_total);
+    printf("\n------------------------------------------------------------");
 }
 
 int main() {
-    printf("Tamanho\tInsercao\tOrdenacao\tVerificacao\tBuscas\t\tRemocao_Inicio\tRemocao_Fim\tRemocao_Valor\tTOTAL\n");
+    printf("******** COMPARADOR DE DESEMPENHO: LISTA ENCADEADA vs ARVORE AVL ********");
     
     testar_operacoes("tarefas_100.txt");
     testar_operacoes("tarefas_1000.txt");

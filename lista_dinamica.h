@@ -1,3 +1,6 @@
+#ifndef TAREFA_DEFINIDA
+#define TAREFA_DEFINIDA
+
 #define MAX_NOME 50
 #define MAX_DESC 100
 #define MAX_CATEGORIA 20
@@ -9,6 +12,8 @@ typedef struct {
     int prioridade;
     char categoria[MAX_CATEGORIA];
 } tarefa;
+
+#endif
 
 typedef struct no_lista {
     tarefa info;
