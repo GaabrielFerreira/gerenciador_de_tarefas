@@ -5,7 +5,6 @@
 #include "arvore_avl.h"
 
 // Funções auxiliares para AVL
-
 int altura(No_avl *no) {
     if (no == NULL) return -1;
     return no->altura;
@@ -56,7 +55,6 @@ No_avl* criar_no(tarefa e) {
 }
 
 // Funções básicas
-
 void cria_avl(AVL *p_avl) {
     *p_avl = NULL;
 }
@@ -176,7 +174,6 @@ int remove_avl(AVL *p_avl, int id) {
 }
 
 // Funções de busca
-
 void busca_prioridade_rec(AVL p_avl, int prioridade, int *count) {
     if (p_avl == NULL) return;
     
@@ -239,7 +236,6 @@ int busca_id_avl(AVL *p_avl, int id) {
 }
 
 // Funções para testes
-
 void ler_arquivo_avl(AVL *avl, const char *nome_arquivo) {
     FILE *arquivo = fopen(nome_arquivo, "r");
     if (!arquivo) {
@@ -271,23 +267,6 @@ void ler_arquivo_avl(AVL *avl, const char *nome_arquivo) {
         insere_avl(avl, t);
     }
     fclose(arquivo);
-}
-
-void medir_tempo_insercao_avl(AVL *avl, const char *arquivo) {
-    clock_t inicio = clock();
-    ler_arquivo_avl(avl, arquivo);
-    clock_t fim = clock();
-    printf("Tempo insercao AVL: %.5f s\n", (double)(fim - inicio)/CLOCKS_PER_SEC);
-}
-
-void medir_tempo_busca_avl(AVL *avl) {
-    clock_t inicio = clock();
-    int b_pri = busca_prioridade_avl(avl, 2);
-    int b_cat = busca_categoria_avl(avl, "Trabalho");
-    int b_nome = busca_nome_avl(avl, "Importante");
-    int b_id = busca_id_avl(avl, 50); // Busca por ID 50
-    clock_t fim = clock();
-    printf("Tempo buscas AVL: %.5f s\n", (double)(fim - inicio)/CLOCKS_PER_SEC);
 }
 
 void libera_avl(AVL *p_avl) {

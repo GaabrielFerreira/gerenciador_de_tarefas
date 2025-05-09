@@ -15,7 +15,7 @@ void testar_operacoes(const char *arquivo) {
     
     // Cabeçalho para o arquivo atual
     printf("\n\n***** TESTE COM %d ELEMENTOS *****\n", data_size);
-    printf("\nTipo\tInsercao\tOrdenacao\tVerificacao\tBuscas\t\tRemocao_Inicio\tRemocao_Fim\tRemocao_Valor\tTOTAL\n");
+    printf("\nTipo\tInsercao\tOrdenacao\tInsere Ordenado\tBuscas\t\tRemocao_Valor\tTOTAL\n");
     
     //INICIA CONTAGEM DE TEMPO DE EXECUCAO PARA LISTA
     a = clock();
@@ -23,12 +23,12 @@ void testar_operacoes(const char *arquivo) {
     //TESTES LISTA...
     cria(&lista);
 
-    //TESTE 1: Inserção Fim
+    //TESTE 1: INSERCAO FIM
     inicio = clock();
-    ler_arquivo(&lista, arquivo);
+    ler_arquivo_fim(&lista, arquivo);
     fim = clock();
-    double tempo_insercao_lista = (double)(fim - inicio)/CLOCKS_PER_SEC;
-    total_tempo_lista += tempo_insercao_lista;
+    double tempo_insercao_fim_lista = (double)(fim - inicio)/CLOCKS_PER_SEC;
+    total_tempo_lista += tempo_insercao_fim_lista;
     
     //TESTE 2: ORDENA
     duplicar_lista(&lista, &copia);
@@ -39,15 +39,12 @@ void testar_operacoes(const char *arquivo) {
     libera(&copia);
     total_tempo_lista += tempo_ordenacao_lista;
     
-    //TESTE 3: VERIFICA ORDENACAO
-    duplicar_lista(&lista, &copia);
-    ordena(&copia);
+    //TESTE 3: INSERE ORDENADO
     inicio = clock();
-    int ordenada_res = ordenada(&copia);
+    ler_arquivo_ordenado(&lista, arquivo);
     fim = clock();
-    double tempo_verificacao_lista = (double)(fim - inicio)/CLOCKS_PER_SEC;
-    libera(&copia);
-    total_tempo_lista += tempo_verificacao_lista;
+    double tempo_insercao_ordenado_lista = (double)(fim - inicio)/CLOCKS_PER_SEC;
+    total_tempo_lista += tempo_insercao_ordenado_lista;
     
     //TESTE 4: BUSCAS
     inicio = clock();
@@ -59,31 +56,7 @@ void testar_operacoes(const char *arquivo) {
     double tempo_buscas_lista = (double)(fim - inicio)/CLOCKS_PER_SEC;
     total_tempo_lista += tempo_buscas_lista;
     
-    //TESTE 5: REMOVE INICIO (10% DATASIZE)
-    duplicar_lista(&lista, &copia);
-    inicio = clock();
-    for(int i = 0; i < data_size/10; i++) {
-        tarefa temp;
-        remove_inicio(&copia, &temp);
-    }
-    fim = clock();
-    double tempo_rem_inicio_lista = (double)(fim - inicio)/CLOCKS_PER_SEC;
-    libera(&copia);
-    total_tempo_lista += tempo_rem_inicio_lista;
-    
-    //TESTE 6: REMOVE FIM (10% DATASIZE)
-    duplicar_lista(&lista, &copia);
-    inicio = clock();
-    for(int i = 0; i < data_size/10; i++) {
-        tarefa temp;
-        remove_fim(&copia, &temp);
-    }
-    fim = clock();
-    double tempo_rem_fim_lista = (double)(fim - inicio)/CLOCKS_PER_SEC;
-    libera(&copia);
-    total_tempo_lista += tempo_rem_fim_lista;
-    
-    //TESTE 6: REMOVE VALOR
+    //TESTE 5: REMOVE VALOR
     duplicar_lista(&lista, &copia);
     inicio = clock();
     for(int i = 1; i <= data_size/10; i++) {
@@ -96,13 +69,11 @@ void testar_operacoes(const char *arquivo) {
     total_tempo_lista += tempo_rem_valor_lista;
     
     // OUTPUT DA LISTA
-    printf("LISTA\t%.6fs\t%.6fs\t%.6fs\t%.6fs\t%.6fs\t%.6fs\t%.6fs\t%.6fs\n",
-           tempo_insercao_lista,
+    printf("LISTA\t%.6fs\t%.6fs\t%.6fs\t%.6fs\t%.6fs\t%.6fs\n",
+           tempo_insercao_fim_lista,
            tempo_ordenacao_lista,
-           tempo_verificacao_lista,
+           tempo_insercao_ordenado_lista,
            tempo_buscas_lista,
-           tempo_rem_inicio_lista,
-           tempo_rem_fim_lista,
            tempo_rem_valor_lista,
            total_tempo_lista);
     
@@ -139,7 +110,7 @@ void testar_operacoes(const char *arquivo) {
     total_tempo_avl += tempo_remocao_avl;
     
     // OUTPUT DA ARVORE AVL
-    printf("AVL\t%.6fs\t---------\t---------\t%.6fs\t---------\t---------\t%.6fs\t%.6fs\n",
+    printf("AVL\t%.6fs\t---------\t---------\t%.6fs\t%.6fs\t%.6fs\n",
            tempo_insercao_avl,
            tempo_buscas_avl,
            tempo_remocao_avl,
@@ -156,13 +127,13 @@ void testar_operacoes(const char *arquivo) {
 int main() {
     printf("******** COMPARADOR DE DESEMPENHO: LISTA ENCADEADA vs ARVORE AVL ********");
     
-    testar_operacoes("tarefas_100.txt");
-    testar_operacoes("tarefas_1000.txt");
-    testar_operacoes("tarefas_10000.txt");
-    testar_operacoes("tarefas_20000.txt");
-    testar_operacoes("tarefas_30000.txt");
-    testar_operacoes("tarefas_40000.txt");
-    testar_operacoes("tarefas_50000.txt");
+    testar_operacoes("tarefas_crescente_100.txt");
+    testar_operacoes("tarefas_crescente_1000.txt");
+    testar_operacoes("tarefas_crescente_10000.txt");
+    testar_operacoes("tarefas_crescente_20000.txt");
+    testar_operacoes("tarefas_crescente_30000.txt");
+    testar_operacoes("tarefas_crescente_40000.txt");
+    testar_operacoes("tarefas_crescente_50000.txt");
     
     return 0;
 }

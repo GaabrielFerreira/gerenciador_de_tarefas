@@ -24,12 +24,20 @@ typedef struct no_avl {
 
 typedef No_avl *AVL;
 
+// Funções auxiliares para AVL
+int altura(No_avl *no);
+int max(int a, int b);
+int fator_balanceamento(No_avl *no);
+No_avl* rotacao_direita(No_avl *y);
+No_avl* rotacao_esquerda(No_avl *x);
+No_avl* criar_no(tarefa e);
+
 // Funções básicas
 void cria_avl(AVL *p_avl);
 int vazia_avl(AVL *p_avl);
 void insere_avl(AVL *p_avl, tarefa e);
+No_avl* menor_no(No_avl *no);
 int remove_avl(AVL *p_avl, int id);
-void libera_avl(AVL *p_avl);
 
 // Funções de busca
 int busca_prioridade_avl(AVL *p_avl, int prioridade);
@@ -39,6 +47,6 @@ int busca_id_avl(AVL *p_avl, int id);
 
 // Funções para testes
 void ler_arquivo_avl(AVL *avl, const char *nome_arquivo);
-void medir_tempo_insercao_avl(AVL *avl, const char *arquivo);
-void medir_tempo_busca_avl(AVL *avl);
+void libera_avl(AVL *p_avl);
 void exibe_avl(AVL *p_avl);
+void exibe_em_ordem(AVL p_avl);
