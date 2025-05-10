@@ -1,50 +1,66 @@
+/*
+Titulo: Arvore AVL
+Autores: João Volta, Bruno da Silveira, Guilherme Coelho, Yuri e Gabriel Ferreira
+Data: 06/05/2025
+Descrição: Implementação das operacoes realizadas na aplicacao.c
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
 #include "arvore_avl.h"
 
-// Funções auxiliares para AVL
+// Retorna a altura de um nó (ou -1 se for NULL)
 int altura(No_avl *no) {
     if (no == NULL) return -1;
     return no->altura;
 }
 
+// Retorna o maior entre dois valores
 int max(int a, int b) {
     return (a > b) ? a : b;
 }
 
+// Calcula o fator de balanceamento de um nó
 int fator_balanceamento(No_avl *no) {
     if (no == NULL) return 0;
     return altura(no->esq) - altura(no->dir);
 }
 
+// Rotação simples à direita
 No_avl* rotacao_direita(No_avl *y) {
     No_avl *x = y->esq;
     No_avl *T2 = x->dir;
 
+    // Realiza a rotação
     x->dir = y;
     y->esq = T2;
 
+    // Atualiza alturas
     y->altura = max(altura(y->esq), altura(y->dir)) + 1;
     x->altura = max(altura(x->esq), altura(x->dir)) + 1;
 
-    return x;
+    return x; // Novo nó raiz
 }
 
+// Rotação simples à esquerda
 No_avl* rotacao_esquerda(No_avl *x) {
     No_avl *y = x->dir;
     No_avl *T2 = y->esq;
 
+    // Realiza a rotação
     y->esq = x;
     x->dir = T2;
 
+    // Atualiza alturas
     x->altura = max(altura(x->esq), altura(x->dir)) + 1;
     y->altura = max(altura(y->esq), altura(y->dir)) + 1;
 
-    return y;
+    return y; // Novo nó raiz
 }
 
+// Cria um novo nó AVL com os dados da tarefa
 No_avl* criar_no(tarefa e) {
     No_avl *no = (No_avl*)malloc(sizeof(No_avl));
     no->info = e;
@@ -54,33 +70,36 @@ No_avl* criar_no(tarefa e) {
     return no;
 }
 
-// Funções básicas
+// Inicializa a árvore como vazia
 void cria_avl(AVL *p_avl) {
     *p_avl = NULL;
 }
 
+// Verifica se a árvore está vazia
 int vazia_avl(AVL *p_avl) {
     return (*p_avl == NULL);
 }
 
+// Insere uma nova tarefa na árvore AVL
 void insere_avl(AVL *p_avl, tarefa e) {
     if (*p_avl == NULL) {
         *p_avl = criar_no(e);
         return;
     }
 
+    // Inserção recursiva com base no ID
     if (e.id < (*p_avl)->info.id) {
         insere_avl(&((*p_avl)->esq), e);
     } else if (e.id > (*p_avl)->info.id) {
         insere_avl(&((*p_avl)->dir), e);
     } else {
-        return; // IDs iguais não são permitidos
+        return; // ID duplicado não é permitido
     }
 
-    // Atualiza altura
+    // Atualiza altura do nó atual
     (*p_avl)->altura = 1 + max(altura((*p_avl)->esq), altura((*p_avl)->dir));
 
-    // Balanceamento
+    // Verifica balanceamento e realiza rotações se necessário
     int balance = fator_balanceamento(*p_avl);
 
     // Casos de desbalanceamento
@@ -107,6 +126,7 @@ void insere_avl(AVL *p_avl, tarefa e) {
     }
 }
 
+// Retorna o nó com menor ID (mais à esquerda)
 No_avl* menor_no(No_avl *no) {
     No_avl *atual = no;
     while (atual->esq != NULL)
@@ -114,6 +134,7 @@ No_avl* menor_no(No_avl *no) {
     return atual;
 }
 
+// Remove uma tarefa pelo ID e rebalanceia a árvore
 int remove_avl(AVL *p_avl, int id) {
     if (*p_avl == NULL) return 0;
 
@@ -122,6 +143,7 @@ int remove_avl(AVL *p_avl, int id) {
     } else if (id > (*p_avl)->info.id) {
         if (!remove_avl(&((*p_avl)->dir), id)) return 0;
     } else {
+        // Nó com um ou nenhum filho
         if (((*p_avl)->esq == NULL) || ((*p_avl)->dir == NULL)) {
             No_avl *temp = (*p_avl)->esq ? (*p_avl)->esq : (*p_avl)->dir;
 
@@ -133,6 +155,7 @@ int remove_avl(AVL *p_avl, int id) {
             }
             free(temp);
         } else {
+            // Nó com dois filhos: substitui pelo menor da subárvore direita
             No_avl *temp = menor_no((*p_avl)->dir);
             (*p_avl)->info = temp->info;
             remove_avl(&((*p_avl)->dir), temp->info.id);
@@ -141,13 +164,11 @@ int remove_avl(AVL *p_avl, int id) {
 
     if (*p_avl == NULL) return 1;
 
-    // Atualiza altura
+    // Atualiza altura e rebalanceia
     (*p_avl)->altura = 1 + max(altura((*p_avl)->esq), altura((*p_avl)->dir));
-
-    // Balanceamento
     int balance = fator_balanceamento(*p_avl);
 
-    // Casos de desbalanceamento
+    // Casos de desbalanceamento após remoção
     if (balance > 1 && fator_balanceamento((*p_avl)->esq) >= 0) {
         *p_avl = rotacao_direita(*p_avl);
         return 1;
@@ -173,7 +194,7 @@ int remove_avl(AVL *p_avl, int id) {
     return 1;
 }
 
-// Funções de busca
+// Busca a quantidade de tarefas com determinada prioridade
 void busca_prioridade_rec(AVL p_avl, int prioridade, int *count) {
     if (p_avl == NULL) return;
     
@@ -189,6 +210,7 @@ int busca_prioridade_avl(AVL *p_avl, int prioridade) {
     return count;
 }
 
+// Busca a quantidade de tarefas de uma determinada categoria
 void busca_categoria_rec(AVL p_avl, const char *categoria, int *count) {
     if (p_avl == NULL) return;
     
@@ -204,6 +226,7 @@ int busca_categoria_avl(AVL *p_avl, const char *categoria) {
     return count;
 }
 
+// Busca por tarefas que contenham o nome fornecido
 void busca_nome_rec(AVL p_avl, const char *nome, int *count) {
     if (p_avl == NULL) return;
     
@@ -219,6 +242,7 @@ int busca_nome_avl(AVL *p_avl, const char *nome) {
     return count;
 }
 
+// Verifica se existe uma tarefa com determinado ID
 int busca_id_avl(AVL *p_avl, int id) {
     AVL atual = *p_avl;
     
@@ -228,14 +252,14 @@ int busca_id_avl(AVL *p_avl, int id) {
         } else if (id > atual->info.id) {
             atual = atual->dir;
         } else {
-            return 1;
+            return 1; // Encontrou
         }
     }
     
-    return 0;
+    return 0; // Não encontrado
 }
 
-// Funções para testes
+// Lê tarefas de um arquivo e insere na árvore
 void ler_arquivo_avl(AVL *avl, const char *nome_arquivo) {
     FILE *arquivo = fopen(nome_arquivo, "r");
     if (!arquivo) {
@@ -246,8 +270,9 @@ void ler_arquivo_avl(AVL *avl, const char *nome_arquivo) {
     char linha[256];
     while (fgets(linha, sizeof(linha), arquivo)) {
         tarefa t;
-        linha[strcspn(linha, "\n")] = 0;
+        linha[strcspn(linha, "\n")] = 0; // Remove quebra de linha
 
+        // Lê e separa os campos da linha
         char *token = strtok(linha, ";");
         t.id = atoi(token);
 
@@ -269,6 +294,7 @@ void ler_arquivo_avl(AVL *avl, const char *nome_arquivo) {
     fclose(arquivo);
 }
 
+// Libera memória de todos os nós da árvore
 void libera_avl(AVL *p_avl) {
     if (*p_avl != NULL) {
         libera_avl(&((*p_avl)->esq));
@@ -278,6 +304,7 @@ void libera_avl(AVL *p_avl) {
     }
 }
 
+// Exibe tarefas em ordem crescente de ID (em-ordem)
 void exibe_em_ordem(AVL p_avl) {
     if (p_avl != NULL) {
         exibe_em_ordem(p_avl->esq);
@@ -288,6 +315,7 @@ void exibe_em_ordem(AVL p_avl) {
     }
 }
 
+// Imprime a árvore completa formatada
 void exibe_avl(AVL *p_avl) {
     printf("\n=== ARVORE AVL DE TAREFAS ===\n");
     exibe_em_ordem(*p_avl);
