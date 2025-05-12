@@ -1,3 +1,10 @@
+/*
+Titulo: Arvore AVL.h
+Autores: Bruno da Silveira, Gabriel Ferreira, Guilherme Coelho, João Volta e Yuri
+Data: 06/05/2025
+Descrição: Definicoes da estrutura AVL e operacoes basicas para gerenciamento de tarefas
+*/
+
 #ifndef TAREFA_DEFINIDA
 #define TAREFA_DEFINIDA
 

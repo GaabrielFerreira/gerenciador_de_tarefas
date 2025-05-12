@@ -1,8 +1,8 @@
 /*
-Titulo: Lista Dinamica
-Autores: João Volta, Bruno da Silveira, Guilherme Coelho, Yuri e Gabriel Ferreira
+Titulo: Lista Dinamica.c
+Autores: Bruno da Silveira, Gabriel Ferreira, Guilherme Coelho, João Volta e Yuri
 Data: 06/05/2025
-Descrição: Implementação das operacoes realizadas na aplicacao.c
+Descrição: Implementacao das operacoes de insercao, remocao, ordenacao e busca em lista encadeada
 */
 
 #include <stdio.h>

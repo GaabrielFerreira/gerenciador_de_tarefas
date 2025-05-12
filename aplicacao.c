@@ -1,3 +1,10 @@
+/*
+Titulo: Aplicacao de Testes
+Autores: Bruno da Silveira, Gabriel Ferreira, Guilherme Coelho, João Volta e Yuri
+Data: 06/05/2025
+Descrição: Testes comparativos de desempenho entre lista encadeada e arvore AVL
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
