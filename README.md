@@ -46,13 +46,19 @@ O projeto implementa uma estrutura de Tarefa com os seguintes atributos:
 ```
 
 ### Compilação
+- Gera os arquivos de dados para utilizar no executavel do projeto:
+```bash
+python3 script_dados/nome_do_arquivo.py
+```
+
+- Gera o arquivo executavel do projeto:
 ```bash
 gcc lista_dinamica.c arvore_avl.c aplicacao.c -o gerenciador_tarefas.exe
 ```
 
 ### Execução
+- Executa todos os testes com diferentes conjutos de dados (de acordo com aplicacao.c)
 ```bash
-# Executa todos os testes com diferentes conjutos de dados (de acordo com aplicacao.c)
 ./gerenciador_tarefas.exe
 ```
  
@@ -64,15 +70,15 @@ O programa gera uma tabela comparativa para diferentes tamanhos de conjunto de d
 
 ***** TESTE COM 100 ELEMENTOS *****
 
-Tipo    Insercao    Ordenacao   Verificacao    Buscas      Remocao_Inicio    Remocao_Fim    Remocao_Valor    TOTAL
-LISTA   0.000123s   0.000056s   0.000003s      0.000018s   0.000007s         0.000015s      0.000022s        0.000244s
-AVL     0.000089s   ---------   ---------      0.000005s   ---------         ---------      0.000012s        0.000106s
+Tipo    Insercao    Ordenacao   Verificacao    Buscas       Remocao_Valor    TOTAL
+LISTA   0.000123s   0.000056s   0.000003s      0.000018s    0.000022s        0.000244s
+AVL     0.000089s   ---------   ---------      0.000005s    0.000012s        0.000106s
 
 ***** TESTE COM 10000 ELEMENTOS *****
 
-Tipo    Insercao    Ordenacao   Verificacao    Buscas      Remocao_Inicio    Remocao_Fim    Remocao_Valor    TOTAL
-LISTA   0.120000s   1.450000s   0.000250s      0.250000s   0.002000s         0.148000s      0.150000s        2.120250s
-AVL     0.080000s   ---------   ---------      0.020000s   ---------         ---------      0.040000s        0.140000s
+Tipo    Insercao    Ordenacao   Verificacao    Buscas      Remocao_Valor    TOTAL
+LISTA   0.120000s   1.450000s   0.000250s      0.250000s   0.150000s        2.120250s
+AVL     0.080000s   ---------   ---------      0.020000s   0.040000s        0.140000s
 ```
 
 O programa testa com diferentes tamanhos de conjunto: 100, 1.000, 10.000, 20.000, 30.000, 40.000 e 50.000 elementos.
